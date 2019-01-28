@@ -15,7 +15,8 @@ Until the release of version 1.0.0 all current minor version increments may be b
 
 ## Usage
 
-      var AIMSClient = require('@alertlogic/aims')
+      var AIMSClient = require('@alertlogic/aims').AIMSClient; //commonjs - e.g. node
+      import { AIMSClient } from '@alertlogic/aims'; //ES2015 - e.g. Angular, TS projects
 
   Get Account Details
 
@@ -141,18 +142,24 @@ Until the release of version 1.0.0 all current minor version increments may be b
   
       npm run interactive
 
+  NOTE - You must build the sources before running this command, see Building section below
+
 ## Tests
 
       npm test
 
-## Linting
-
-      npm run lint
-
 ## Contributing
 
-This repository follows the eslint airbnb style.
+The sources are written in Typescript and follow the tslint airbnb style.
 
-## Release History
+## Building
 
-* 0.1.0 Initial release
+To generate a production build
+
+    npm run build
+
+To generate a development build
+
+    npm run build-dev
+
+Builds will be be generated into a `dist` folder and will contain commonjs and umd bundles that will be consumed depending on the module system in whichever environment you are using.
