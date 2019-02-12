@@ -1,9 +1,9 @@
-  @alertlogic/aims
+  @al/aims
 =========
 
 A client for working with the AIMS Alert Logic API.
 
-This library uses @alertlogic/client as its HTTP provider interface.
+This library uses @al/client as its HTTP provider interface.
 
 ## Disclaimer
 
@@ -11,12 +11,12 @@ Until the release of version 1.0.0 all current minor version increments may be b
 
 ## Installation
 
-      npm install @alertlogic/aims --save
+      npm install @al/aims --save
 
 ## Usage
 
-      var AIMSClient = require('@alertlogic/aims').AIMSClient; //commonjs - e.g. node
-      import { AIMSClient } from '@alertlogic/aims'; //ES2015 - e.g. Angular, TS projects
+      var AIMSClient = require('@al/aims').AIMSClient; //commonjs - e.g. node
+      import { AIMSClient } from '@al/aims'; //ES2015 - e.g. Angular, TS projects
 
   Get Account Details
 

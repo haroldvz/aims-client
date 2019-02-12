@@ -1,7 +1,7 @@
 /**
  * Module to deal with available AIMS Public API endpoints
  */
-import { ALClient } from '@alertlogic/client';
+import { ALClient } from '@al/client';
 
 class AIMSClient {
 
