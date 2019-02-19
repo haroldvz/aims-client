@@ -1,7 +1,7 @@
 /**
  * Module to deal with available AIMS Public API endpoints
  */
-import { ALClient } from '@al/client';
+import { ALClient, APIRequestParams } from '@al/client';
 
 class AIMSClient {
 
@@ -13,7 +13,7 @@ class AIMSClient {
    * /aims/v1/:account_id/account
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account"
    */
-  async getAccountDetails(accountId) {
+  async getAccountDetails(accountId: string) {
     const accountDetails = await this.alClient.fetch({
       service_name: 'aims',
       account_id: accountId,
@@ -28,7 +28,7 @@ class AIMSClient {
    * /aims/v1/:account_id/accounts/:relationship
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/accounts/managed"
    */
-  async getManagedAccounts(accountId, queryParams) {
+  async getManagedAccounts(accountId: string, queryParams) {
     const managedAccounts = await this.alClient.fetch({
       service_name: 'aims',
       account_id: accountId,
@@ -44,7 +44,7 @@ class AIMSClient {
    * /aims/v1/:account_id/account_ids/:relationship
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account_ids/managed"
    */
-  async getManagedAccountIds(accountId, queryParams) {
+  async getManagedAccountIds(accountId: string, queryParams) {
     const managedAccountIds = await this.alClient.fetch({
       service_name: 'aims',
       account_id: accountId,
@@ -60,7 +60,7 @@ class AIMSClient {
    * /aims/v1/:account_id/account
    * -d '{"mfa_required": true}' "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account"
    */
-  async requireMFA(accountId, mfaRequired) {
+  async requireMFA(accountId: string, mfaRequired: boolean) {
     const mfa = await this.alClient.post({
       service_name: 'aims',
       account_id: accountId,
@@ -76,7 +76,7 @@ class AIMSClient {
    * /aims/v1/authenticate
    * -u username:password "https://api.cloudinsight.alertlogic.com/aims/v1/authenticate"
    */
-  async authenticate(params, user, pass, mfa) {
+  async authenticate(params: APIRequestParams, user: string, pass: string, mfa?) {
     const access = await this.alClient.authenticate(params, user, pass, mfa);
     return access;
   }
@@ -87,7 +87,7 @@ class AIMSClient {
    * /aims/v1/change_password
    * -d '{"email": "admin@company.com", "current_password": "hunter2", "new_password": "Fraudulent$Foes"}' "https://api.cloudinsight.alertlogic.com/aims/v1/change_password"
    */
-  async changePassword(email, password, newPassword) {
+  async changePassword(email: string, password: string, newPassword: string) {
     const changePass = await this.alClient.post({
       service_name: 'aims',
       path: '/change_password',
@@ -116,7 +116,7 @@ class AIMSClient {
    * /aims/v1/reset_password
    * -d '{"email": "admin@company.com", "return_to": "https://console.alertlogic.net"}' "https://api.cloudinsight.alertlogic.com/aims/v1/reset_password"
    */
-  async initiateReset(email, returnTo) {
+  async initiateReset(email: string, returnTo: string) {
     const reset = await this.alClient.post({
       service_name: 'aims',
       path: '/reset_password',
@@ -131,7 +131,7 @@ class AIMSClient {
    * /aims/v1/reset_password/:token
    * -d '{"password": "hunter2"}' "https://api.cloudinsight.alertlogic.com/aims/v1/reset_password/69EtspCz3c4"
    */
-  async resetWithToken(token, password) {
+  async resetWithToken(token: string, password: string) {
     const reset = await this.alClient.set({
       service_name: 'aims',
       path: `/reset_password/${token}`,
@@ -146,7 +146,7 @@ class AIMSClient {
    * /aims/v1/:account_id/roles
    * -d '{"name": "Super Mega Power User", "permissions": {"*:own:*:*": "allowed", "aims:own:grant:*":"allowed"}}' "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles"
    */
-  async createRole(accountId, name, permissions) {
+  async createRole(accountId: string, name: string, permissions) {
     const roleCreate = await this.alClient.post({
       service_name: 'aims',
       account_id: accountId,
@@ -161,7 +161,7 @@ class AIMSClient {
    * /aims/v1/:account_id/roles/:role_id
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles/C7C5BE57-F199-4F14-BCB5-43E31CA02842"
    */
-  async deleteRole(accountId, roleId) {
+  async deleteRole(accountId: string, roleId: string) {
     const roleDelete = await this.alClient.delete({
       service_name: 'aims',
       account_id: accountId,
@@ -176,7 +176,7 @@ class AIMSClient {
    * /aims/v1/roles/:role_id
    * "https://api.cloudinsight.alertlogic.com/aims/v1/roles/2A33175D-86EF-44B5-AA39-C9549F6306DF"
    */
-  async getGlobalRole(roleId) {
+  async getGlobalRole(roleId: string) {
     const role = await this.alClient.fetch({
       service_name: 'aims',
       path: `/roles/${roleId}`,
@@ -190,7 +190,7 @@ class AIMSClient {
    * /aims/v1/:account_id/roles/:role_id
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles/2A33175D-86EF-44B5-AA39-C9549F6306DF"
    */
-  async getAccountRole(accountId, roleId) {
+  async getAccountRole(accountId: string, roleId: string) {
     const role = await this.alClient.fetch({
       service_name: 'aims',
       account_id: accountId,
@@ -219,7 +219,7 @@ class AIMSClient {
    * /aims/v1/:account_id/roles
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles"
    */
-  async getAccountRoles(accountId) {
+  async getAccountRoles(accountId: string) {
     const roles = await this.alClient.fetch({
       service_name: 'aims',
       account_id: accountId,
@@ -234,7 +234,7 @@ class AIMSClient {
    * /aims/v1/:account_id/roles/:role_id
    * -d '{"name": "Mega Power User", "permissions": {"*:own:*:*": "allowed", "aims:own:grant:*":"allowed"}}' "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles/2A33175D-86EF-44B5-AA39-C9549F6306DF"
    */
-  async updateRole(accountId, name, permissions) {
+  async updateRole(accountId: string, name: string, permissions) {
     const roleUpdate = await this.alClient.post({
       service_name: 'aims',
       account_id: accountId,
@@ -248,7 +248,7 @@ class AIMSClient {
    * /aims/v1/:account_id/roles/:role_id
    * -d '{"name": "Mega Power User"}' "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles/2A33175D-86EF-44B5-AA39-C9549F6306DF"
    */
-  async updateRoleName(accountId, name) {
+  async updateRoleName(accountId: string, name: string) {
     const updateRole = await this.alClient.post({
       service_name: 'aims',
       account_id: accountId,
@@ -263,7 +263,7 @@ class AIMSClient {
    * /aims/v1/:account_id/roles/:role_id
    * -d '{"permissions": {"*:own:*:*": "allowed", "aims:own:grant:*":"allowed"}}' "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles/2A33175D-86EF-44B5-AA39-C9549F6306DF"
    */
-  async updateRolePermissions(accountId, permissions) {
+  async updateRolePermissions(accountId: string, permissions) {
     const updateRole = await this.alClient.post({
       service_name: 'aims',
       account_id: accountId,
@@ -287,7 +287,7 @@ class AIMSClient {
    * }
    * EOF
    */
-  async enrollMFA(uri, codes) {
+  async enrollMFA(uri: string, codes) {
     const mfa = await this.alClient.post({
       service_name: 'aims',
       path: '/user/mfa/enroll',
@@ -302,7 +302,7 @@ class AIMSClient {
    * /aims/v1/user/mfa/:email
    * "https://api.cloudinsight.alertlogic.com/aims/v1/user/mfa/admin@company.com"
    */
-  async deleteMFA(email) {
+  async deleteMFA(email: string) {
     const mfa = await this.alClient.delete({
       service_name: 'aims',
       path: `/user/mfa/${email}`,
