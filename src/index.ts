@@ -1,1 +1,1 @@
-export { aimsClient as AIMSClient } from './aims-client';
+export { aimsClient as AIMSClient, AIMSAuthenticationTokenInfo } from './aims-client';
