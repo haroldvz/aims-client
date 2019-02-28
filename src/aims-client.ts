@@ -430,7 +430,7 @@ class AIMSClient {
       path: '/users',
       params: queryParams,
     });
-    return users as AIMSUsers;
+    return users as AIMSUsersResponse;
   }
 }
 
