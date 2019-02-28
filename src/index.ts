@@ -4,4 +4,5 @@ export {
   AIMSAccount,
   AIMSRole,
   AIMSAuthentication,
+  AIMSAccessKey,
    } from './aims-client';

@@ -91,6 +91,20 @@ export interface AIMSRole {
   modified?: UserTimeStamp;
 }
 
+export interface AIMSAccessKey {
+  access_key_id: string;
+  user_id: string;
+  account_id: string;
+  label: string;
+  created?: UserTimeStamp;
+  modified?: UserTimeStamp;
+  secret_key: string;
+}
+
+interface AIMSAccessKeyListResponse {
+  access_keys: AIMSAccessKey[];
+}
+
 class AIMSClient {
 
   private alClient = ALClient;
@@ -431,6 +445,67 @@ class AIMSClient {
       params: queryParams,
     });
     return users as AIMSUsersResponse;
+  }
+
+  /**
+   * Create Access Key
+   * POST
+   * /aims/v1/:account_id/users/:user_id/access_keys
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23/access_keys"
+   * -d '{"label": "api access"}'
+   */
+  async createAccessKey(accountId: string, userId: string, label: string) {
+    const key = await this.alClient.post({
+      service_name: this.serviceName,
+      path: `/users/${userId}/access_keys`,
+      data: `{"label": "${label}"}`,
+    });
+    return key as AIMSAccessKey;
+  }
+
+  /**
+   * Get Access Key
+   * GET
+   * /aims/v1/access_keys/:access_key_id
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/access_keys/61fb235617960503"
+   */
+  async getAccessKey(accessKeyId: string) {
+    const key = await this.alClient.fetch({
+      service_name: this.serviceName,
+      path: `/access_keys/${accessKeyId}`,
+    });
+    return key as AIMSAccessKey;
+  }
+
+  /**
+   * List Access Keys
+   * GET
+   * /aims/v1/:account_id/users/:user_id/access_keys?out=:out
+   * https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23/access_keys?out=full"
+   */
+  async getAccessKeys(accountId: string, userId: string) {
+    const keys = await this.alClient.fetch({
+      service_name: this.serviceName,
+      account_id: accountId,
+      user_id: userId,
+      path: `/users/${userId}/access_keys?out=full`,
+    });
+    return keys as AIMSAccessKeyListResponse;
+  }
+
+  /**
+   * Delete Access Key
+   * DELETE
+   * /aims/v1/:account_id/users/:user_id/access_keys/:access_key_id
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23/access_keys/61FB235617960503"
+   */
+  async deleteAccessKey(accountId: string, userId: string, accessKeyId: string) {
+    const keyDelete = await this.alClient.delete({
+      service_name: this.serviceName,
+      account_id: accountId,
+      path: `/users/${userId}/access_keys/${accessKeyId}`,
+    });
+    return keyDelete;
   }
 }
 
