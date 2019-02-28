@@ -42,6 +42,10 @@ interface AIMSUser {
   modified?: UserTimeStamp;
 }
 
+interface AIMSUsersResponse {
+  users: AIMSUser[];
+}
+
 export interface AIMSAccount {
   id?: string;
   name?: string;
@@ -411,6 +415,22 @@ class AIMSClient {
       params: queryParams,
     });
     return user as AIMSUser;
+  }
+
+  /**
+   * List Users
+   * GET
+   * /aims/v1/:account_id/users
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users"
+   */
+  async getUsers(accountId: string, queryParams?: {include_role_ids?: boolean, include_user_credential?: boolean}) {
+    const users = await this.alClient.fetch({
+      service_name: this.serviceName,
+      account_id: accountId,
+      path: '/users',
+      params: queryParams,
+    });
+    return users as AIMSUsersResponse;
   }
 }
 
