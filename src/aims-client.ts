@@ -42,7 +42,9 @@ interface AIMSUser {
   modified?: UserTimeStamp;
 }
 
-interface AIMSUsers extends Array<AIMSUser>{}
+export interface AIMSUsersResponse {
+  users: AIMSUser[];
+}
 
 export interface AIMSAccount {
   id?: string;
