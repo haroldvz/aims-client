@@ -42,7 +42,7 @@ interface AIMSUser {
   modified?: UserTimeStamp;
 }
 
-export interface AIMSUsersResponse {
+interface AIMSUsersResponse {
   users: AIMSUser[];
 }
 
