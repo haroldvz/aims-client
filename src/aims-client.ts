@@ -111,6 +111,68 @@ class AIMSClient {
   private serviceName = 'aims';
 
   /**
+   * Create a user
+   * POST
+   * /aims/v1/:account_id/users?one_time_password=:one_time_password
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users"
+   * -d '{ "name": "Bob Dobalina", "email": "admin@company.com", "mobile_phone": "123-555-0123" }'
+   */
+  async createUser(accountId: string, name: string, email: string, mobilePhone: string) {
+    const user = await this.alClient.post({
+      service_name: this.serviceName,
+      account_id: accountId,
+      path: '/users',
+      data: `{"name": "${name}", "email": "${email}", "mobile_phone": "${mobilePhone}"}`,
+    });
+    return user as AIMSUser;
+  }
+
+  /**
+   * Delete a user
+   * DELETE
+   * /aims/v1/:account_id/users/:user_id
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23"
+   */
+  async deleteUser(accountId: string, userId: string) {
+    const userDelete = await this.alClient.delete({
+      service_name: this.serviceName,
+      account_id: accountId,
+      path: `/users/${userId}`,
+    });
+    return userDelete;
+  }
+
+  /**
+   * Get user details
+   * GET
+   * /aims/v1/:account_id/users/:user_id
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23"
+   */
+  async getUserDetailsById(:accountId: string, userId: string) {
+    const userDetails = await this.alClient.fetch({
+      service_name: this.serviceName,
+      account_id: accountId,
+      path: `/users/${userId}`,
+    });
+    return userDetails as AIMSUser;
+  }
+
+  /**
+   * Get user permissions
+   * GET
+   * /aims/v1/:account_id/users/:user_id/permissions
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23/permissions"
+   */
+  async getUserPermissions(:accountId: string, userId: string) {
+    const userPermissions = await this.alClient.fetch({
+      service_name: this.serviceName,
+      account_id: accountId,
+      path: `/users/${userId}/permissions`,
+    });
+    return userPermissions;
+  }
+
+  /**
    * Get Account Details
    * GET
    * /aims/v1/:account_id/account
