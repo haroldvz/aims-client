@@ -148,7 +148,7 @@ class AIMSClient {
    * /aims/v1/:account_id/users/:user_id
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23"
    */
-  async getUserDetailsById(:accountId: string, userId: string) {
+  async getUserDetailsById(accountId: string, userId: string) {
     const userDetails = await this.alClient.fetch({
       service_name: this.serviceName,
       account_id: accountId,
@@ -163,7 +163,7 @@ class AIMSClient {
    * /aims/v1/:account_id/users/:user_id/permissions
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23/permissions"
    */
-  async getUserPermissions(:accountId: string, userId: string) {
+  async getUserPermissions(accountId: string, userId: string) {
     const userPermissions = await this.alClient.fetch({
       service_name: this.serviceName,
       account_id: accountId,
@@ -549,7 +549,6 @@ class AIMSClient {
     const keys = await this.alClient.fetch({
       service_name: this.serviceName,
       account_id: accountId,
-      user_id: userId,
       path: `/users/${userId}/access_keys?out=full`,
     });
     return keys as AIMSAccessKeyListResponse;
