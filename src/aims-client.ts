@@ -526,6 +526,22 @@ class AIMSClient {
   }
 
   /**
+   * Update Access Key
+   * POST
+   * /aims/v1/access_keys/:access_key_id
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/access_keys/61fb235617960503"
+   * -d '{"label": "api access"}'
+   */
+  async updateAccessKey(accessKeyId: string, label: string) {
+    const key = await this.alClient.post({
+      service_name: this.serviceName,
+      path: `/access_keys/${accessKeyId}`,
+      data: `{"label": "${label}"}`,
+    });
+    return key as AIMSAccessKey;
+  }
+
+  /**
    * Get Access Key
    * GET
    * /aims/v1/access_keys/:access_key_id
