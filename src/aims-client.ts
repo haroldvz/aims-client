@@ -519,6 +519,7 @@ class AIMSClient {
   async createAccessKey(accountId: string, userId: string, label: string) {
     const key = await this.alClient.post({
       service_name: this.serviceName,
+      account_id: accountId,
       path: `/users/${userId}/access_keys`,
       data: `{"label": "${label}"}`,
     });
