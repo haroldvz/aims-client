@@ -562,10 +562,11 @@ class AIMSClient {
    * /aims/v1/:account_id/users/:user_id/access_keys?out=:out
    * https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23/access_keys?out=full"
    */
-  async getAccessKeys(accountId: string, userId: string) {
+  async getAccessKeys(accountId: string, userId: string, ttl: number = 60000) {
     const keys = await this.alClient.fetch({
       service_name: this.serviceName,
       account_id: accountId,
+      ttl: ttl,
       path: `/users/${userId}/access_keys?out=full`,
     });
     return keys as AIMSAccessKeyListResponse;
