@@ -3,6 +3,7 @@
     "rules": {
         "max-line-length": {
             "options": [300]
-        }
+        },
+        "object-literal-shorthand": [true, "never"]
     }
 }
