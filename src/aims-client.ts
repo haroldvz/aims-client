@@ -241,16 +241,16 @@ class AIMSClient {
    * /aims/v1/authenticate
    * -u username:password "https://api.cloudinsight.alertlogic.com/aims/v1/authenticate"
    */
-  async authenticate(params: APIRequestParams, user: string, pass: string, mfa?) {
-    const authenticate = await this.alClient.authenticate(params, user, pass, mfa);
+  async authenticate( user:string, pass:string, mfa?:string ) {
+    const authenticate = await this.alClient.authenticate( user, pass, mfa );
     return authenticate as AIMSAuthentication;
   }
 
   /**
    * Authenticate a user's identity with an mfa code and session token
    */
-  async authenticateWithMFASessionToken(params: APIRequestParams, token: string, mfa: string): Promise<any> {
-    const authenticate = await this.alClient.authenticateWithMFASessionToken(params, token, mfa);
+  async authenticateWithMFASessionToken(token: string, mfa: string): Promise<any> {
+    const authenticate = await this.alClient.authenticateWithMFASessionToken(token, mfa);
     return authenticate as AIMSAuthentication;
   }
 

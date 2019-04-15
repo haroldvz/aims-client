@@ -5,4 +5,4 @@ export {
   AIMSRole,
   AIMSAuthentication,
   AIMSAccessKey,
-   } from './aims-client';
+} from './aims-client';
