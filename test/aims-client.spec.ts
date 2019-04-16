@@ -563,6 +563,7 @@ describe('AIMS Client Test Suite:', () => {
       expect(stub.callCount).to.equal(1);
       const payload = {
         service_name: serviceName,
+        account_id: accountId,
         path: `/users/${userId}/access_keys`,
         data: `{"label": "${label}"}`,
       };
@@ -602,6 +603,7 @@ describe('AIMS Client Test Suite:', () => {
       const payload = {
         service_name: serviceName,
         account_id: accountId,
+        ttl: 60000,
         path: `/users/${userId}/access_keys?out=full`,
       };
       assert.deepEqual(payload, stub.args[0][0]);
