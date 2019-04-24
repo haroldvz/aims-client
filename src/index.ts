@@ -1,8 +1,2 @@
-export {
-  aimsClient as AIMSClient,
-  AIMSAuthenticationTokenInfo,
-  AIMSAccount,
-  AIMSRole,
-  AIMSAuthentication,
-  AIMSAccessKey,
-} from './aims-client';
+export * from './types';
+export * from './aims-client';
