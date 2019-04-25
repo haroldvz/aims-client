@@ -2,7 +2,7 @@
  * Module to deal with available AIMS Public API endpoints
  */
 import { AlSessionInstance, AlDefaultSession } from '@al/session';
-import { AlApiClient, AlDefaultClient, APIRequestParams } from '@al/client';
+import { AlApiClient, AlDefaultClient, APIRequestParams, AIMSSessionDescriptor } from '@al/client';
 import { AIMSAccount, AIMSUser, AIMSAuthentication, AIMSAuthenticationTokenInfo, AIMSRole, AIMSAccessKey } from './types';
 
 export class AIMSClientInstance {
@@ -145,14 +145,14 @@ export class AIMSClientInstance {
    * /aims/v1/authenticate
    * -u username:password "https://api.cloudinsight.alertlogic.com/aims/v1/authenticate"
    */
-  async authenticate( user:string, pass:string, mfa?:string ) {
+  async authenticate( user:string, pass:string, mfa?:string ): Promise<AIMSSessionDescriptor> {
     return this.session.client.authenticate( user, pass, mfa );
   }
 
   /**
    * Authenticate a user's identity with an mfa code and session token
    */
-  async authenticateWithMFASessionToken(token: string, mfa: string) {
+  async authenticateWithMFASessionToken(token: string, mfa: string): Promise<AIMSSessionDescriptor> {
     return this.session.client.authenticateWithMFASessionToken(token, mfa);
   }
 

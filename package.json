@@ -34,7 +34,7 @@
     "test-watch": "karma start --no-single-run --auto-watch",
     "build-dev": "npm run clean &&  tsc && webpack --mode=development",
     "build": "webpack",
-    "prebuild": "npm run clean && npm run lint && npm run test && tsc",
+    "prebuild": "npm run clean && npm run lint && tsc",
     "lint": "tslint -p tsconfig.json",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build",
@@ -60,6 +60,10 @@
     "typescript": "^3.2.4",
     "webpack": "^4.29.0",
     "webpack-cli": "^3.2.1"
+  },
+  "peerDependencies": {
+    "@al/client": "^0.13.0",
+    "@al/session": "^0.8.2"
   },
   "files": [
     "dist"
