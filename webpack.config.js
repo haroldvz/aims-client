@@ -8,6 +8,9 @@ module.exports = (env) => {
     entry: {
       'index': path.resolve(__dirname, './dist/commonjs/index.js')
     },
+    externals: [
+      '@al/client', '@al/session', '@al/haversack'
+    ],
     output: {
       path: path.resolve(__dirname, './dist/umd'),
       filename: '[name].js',
