@@ -97,7 +97,7 @@ export class AIMSClientInstance {
    * /aims/v1/:account_id/accounts/:relationship
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/accounts/managed"
    */
-  async getManagedAccounts(accountId: string, queryParams):Promise<AIMSAccount[]> {
+  async getManagedAccounts(accountId: string, queryParams?):Promise<AIMSAccount[]> {
     const managedAccounts = await this.session.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
@@ -113,7 +113,7 @@ export class AIMSClientInstance {
    * /aims/v1/:account_id/account_ids/:relationship
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account_ids/managed"
    */
-  async getManagedAccountIds(accountId: string, queryParams):Promise<string[]> {
+  async getManagedAccountIds(accountId: string, queryParams?):Promise<string[]> {
     const managedAccountIds = await this.session.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
