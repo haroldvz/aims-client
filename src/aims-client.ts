@@ -1,17 +1,16 @@
 /**
  * Module to deal with available AIMS Public API endpoints
  */
-import { AlSessionInstance, AlDefaultSession } from '@al/session';
 import { AlApiClient, AlDefaultClient, APIRequestParams, AIMSSessionDescriptor } from '@al/client';
 import { AIMSAccount, AIMSUser, AIMSAuthentication, AIMSAuthenticationTokenInfo, AIMSRole, AIMSAccessKey } from './types';
 
 export class AIMSClientInstance {
 
-  private session:AlSessionInstance;
+  private client:AlApiClient;
   private serviceName = 'aims';
 
-  constructor( session:AlSessionInstance = null ) {
-    this.session = session || AlDefaultSession;
+  constructor( client:AlApiClient = null ) {
+    this.client = client || AlDefaultClient;
   }
 
   /**
@@ -22,7 +21,7 @@ export class AIMSClientInstance {
    * -d '{ "name": "Bob Dobalina", "email": "admin@company.com", "mobile_phone": "123-555-0123" }'
    */
   async createUser(accountId: string, name: string, email: string, mobilePhone: string) {
-    const user = await this.session.client.post({
+    const user = await this.client.post({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/users',
@@ -38,7 +37,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23"
    */
   async deleteUser(accountId: string, userId: string) {
-    const userDelete = await this.session.client.delete({
+    const userDelete = await this.client.delete({
       service_name: this.serviceName,
       account_id: accountId,
       path: `/users/${userId}`,
@@ -53,7 +52,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23"
    */
   async getUserDetailsById(accountId: string, userId: string) {
-    const userDetails = await this.session.client.fetch({
+    const userDetails = await this.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
       path: `/users/${userId}`,
@@ -68,7 +67,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23/permissions"
    */
   async getUserPermissions(accountId: string, userId: string) {
-    const userPermissions = await this.session.client.fetch({
+    const userPermissions = await this.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
       path: `/users/${userId}/permissions`,
@@ -83,7 +82,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account"
    */
   async getAccountDetails(accountId: string) {
-    const accountDetails = await this.session.client.fetch({
+    const accountDetails = await this.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/account',
@@ -98,7 +97,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/accounts/managed"
    */
   async getManagedAccounts(accountId: string, queryParams?):Promise<AIMSAccount[]> {
-    const managedAccounts = await this.session.client.fetch({
+    const managedAccounts = await this.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/accounts/managed',
@@ -114,7 +113,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account_ids/managed"
    */
   async getManagedAccountIds(accountId: string, queryParams?):Promise<string[]> {
-    const managedAccountIds = await this.session.client.fetch({
+    const managedAccountIds = await this.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/account_ids/managed',
@@ -130,7 +129,7 @@ export class AIMSClientInstance {
    * -d '{"mfa_required": true}' "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account"
    */
   async requireMFA(accountId: string, mfaRequired: boolean):Promise<AIMSAccount> {
-    const account = await this.session.client.post({
+    const account = await this.client.post({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/account',
@@ -146,14 +145,14 @@ export class AIMSClientInstance {
    * -u username:password "https://api.cloudinsight.alertlogic.com/aims/v1/authenticate"
    */
   async authenticate( user:string, pass:string, mfa?:string ): Promise<AIMSSessionDescriptor> {
-    return this.session.client.authenticate( user, pass, mfa );
+    return this.client.authenticate( user, pass, mfa );
   }
 
   /**
    * Authenticate a user's identity with an mfa code and session token
    */
   async authenticateWithMFASessionToken(token: string, mfa: string): Promise<AIMSSessionDescriptor> {
-    return this.session.client.authenticateWithMFASessionToken(token, mfa);
+    return this.client.authenticateWithMFASessionToken(token, mfa);
   }
 
   /**
@@ -163,7 +162,7 @@ export class AIMSClientInstance {
    * -d '{"email": "admin@company.com", "current_password": "hunter2", "new_password": "Fraudulent$Foes"}' "https://api.cloudinsight.alertlogic.com/aims/v1/change_password"
    */
   async changePassword(email: string, password: string, newPassword: string) {
-    const changePass = await this.session.client.post({
+    const changePass = await this.client.post({
       service_name: this.serviceName,
       path: '/change_password',
       data: `{email: ${email}, current_password: ${password}, new_password: ${newPassword}}`,
@@ -178,7 +177,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/token_info"
    */
   async tokenInfo() {
-    const tokenData = await this.session.client.fetch({
+    const tokenData = await this.client.fetch({
       service_name: this.serviceName,
       path: '/token_info',
     });
@@ -192,7 +191,7 @@ export class AIMSClientInstance {
    * -d '{"email": "admin@company.com", "return_to": "https://console.alertlogic.net"}' "https://api.cloudinsight.alertlogic.com/aims/v1/reset_password"
    */
   async initiateReset(email: string, returnTo: string) {
-    const reset = await this.session.client.post({
+    const reset = await this.client.post({
       service_name: this.serviceName,
       path: '/reset_password',
       data: `{email: ${email}, return_to: ${returnTo}}`,
@@ -207,7 +206,7 @@ export class AIMSClientInstance {
    * -d '{"password": "hunter2"}' "https://api.cloudinsight.alertlogic.com/aims/v1/reset_password/69EtspCz3c4"
    */
   async resetWithToken(token: string, password: string) {
-    const reset = await this.session.client.set({
+    const reset = await this.client.set({
       service_name: this.serviceName,
       path: `/reset_password/${token}`,
       data: `{password: ${password}}`,
@@ -222,7 +221,7 @@ export class AIMSClientInstance {
    * -d '{"name": "Super Mega Power User", "permissions": {"*:own:*:*": "allowed", "aims:own:grant:*":"allowed"}}' "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles"
    */
   async createRole(accountId: string, name: string, permissions) {
-    const createRole = await this.session.client.post({
+    const createRole = await this.client.post({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/roles', data: `{name: ${name}, permissions: ${permissions}}`,
@@ -237,7 +236,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles/C7C5BE57-F199-4F14-BCB5-43E31CA02842"
    */
   async deleteRole(accountId: string, roleId: string) {
-    const roleDelete = await this.session.client.delete({
+    const roleDelete = await this.client.delete({
       service_name: this.serviceName,
       account_id: accountId,
       path: `/roles/${roleId}`,
@@ -252,7 +251,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/roles/2A33175D-86EF-44B5-AA39-C9549F6306DF"
    */
   async getGlobalRole(roleId: string) {
-    const role = await this.session.client.fetch({
+    const role = await this.client.fetch({
       service_name: this.serviceName,
       path: `/roles/${roleId}`,
     });
@@ -266,7 +265,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles/2A33175D-86EF-44B5-AA39-C9549F6306DF"
    */
   async getAccountRole(accountId: string, roleId: string) {
-    const role = await this.session.client.fetch({
+    const role = await this.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
       path: `/roles/${roleId}`,
@@ -281,7 +280,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/roles"
    */
     async getGlobalRoles():Promise<AIMSRole[]> {
-    const roles = await this.session.client.fetch({
+    const roles = await this.client.fetch({
       service_name: this.serviceName,
       path: '/roles',
     });
@@ -295,7 +294,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles"
    */
   async getAccountRoles(accountId: string):Promise<AIMSRole[]> {
-    const roles = await this.session.client.fetch({
+    const roles = await this.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/roles',
@@ -310,7 +309,7 @@ export class AIMSClientInstance {
    * -d '{"name": "Mega Power User", "permissions": {"*:own:*:*": "allowed", "aims:own:grant:*":"allowed"}}' "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles/2A33175D-86EF-44B5-AA39-C9549F6306DF"
    */
   async updateRole(accountId: string, name: string, permissions) {
-    const roleUpdate = await this.session.client.post({
+    const roleUpdate = await this.client.post({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/roles', data: `{name: ${name}, permissions: ${permissions}}`,
@@ -324,7 +323,7 @@ export class AIMSClientInstance {
    * -d '{"name": "Mega Power User"}' "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles/2A33175D-86EF-44B5-AA39-C9549F6306DF"
    */
   async updateRoleName(accountId: string, name: string) {
-    const updateRole = await this.session.client.post({
+    const updateRole = await this.client.post({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/roles',
@@ -339,7 +338,7 @@ export class AIMSClientInstance {
    * -d '{"permissions": {"*:own:*:*": "allowed", "aims:own:grant:*":"allowed"}}' "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/roles/2A33175D-86EF-44B5-AA39-C9549F6306DF"
    */
   async updateRolePermissions(accountId: string, permissions) {
-    const updateRole = await this.session.client.post({
+    const updateRole = await this.client.post({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/roles',
@@ -363,7 +362,7 @@ export class AIMSClientInstance {
    * EOF
    */
   async enrollMFA(uri: string, codes) {
-    const mfa = await this.session.client.post({
+    const mfa = await this.client.post({
       service_name: this.serviceName,
       path: '/user/mfa/enroll',
       data: `{mfa_uri: ${uri}, mfa_codes: ${codes}}`,
@@ -378,7 +377,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/user/mfa/admin@company.com"
    */
   async deleteMFA(email: string) {
-    const mfa = await this.session.client.delete({
+    const mfa = await this.client.delete({
       service_name: this.serviceName,
       path: `/user/mfa/${email}`,
     });
@@ -386,7 +385,7 @@ export class AIMSClientInstance {
   }
 
   async getUserDetails(accountId: string, userId: string, queryParams?: {include_role_ids?: boolean, include_user_credential?: boolean}) {
-    const user = await this.session.client.fetch({
+    const user = await this.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
       path: `/users/${userId}`,
@@ -403,7 +402,7 @@ export class AIMSClientInstance {
    */
   async getUsers( accountId: string,
                   queryParams?: {include_role_ids?: boolean, include_user_credential?: boolean} ):Promise<AIMSUser[]> {
-    const users = await this.session.client.fetch({
+    const users = await this.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
       path: '/users',
@@ -420,7 +419,7 @@ export class AIMSClientInstance {
    * -d '{"label": "api access"}'
    */
   async createAccessKey(accountId: string, userId: string, label: string) {
-    const key = await this.session.client.post({
+    const key = await this.client.post({
       service_name: this.serviceName,
       account_id: accountId,
       path: `/users/${userId}/access_keys`,
@@ -437,7 +436,7 @@ export class AIMSClientInstance {
    * -d '{"label": "api access"}'
    */
   async updateAccessKey(accessKeyId: string, label: string) {
-    const key = await this.session.client.post({
+    const key = await this.client.post({
       service_name: this.serviceName,
       path: `/access_keys/${accessKeyId}`,
       data: `{"label": "${label}"}`,
@@ -452,7 +451,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/access_keys/61fb235617960503"
    */
   async getAccessKey(accessKeyId: string) {
-    const key = await this.session.client.fetch({
+    const key = await this.client.fetch({
       service_name: this.serviceName,
       path: `/access_keys/${accessKeyId}`,
     });
@@ -466,7 +465,7 @@ export class AIMSClientInstance {
    * https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23/access_keys?out=full"
    */
   async getAccessKeys(accountId: string, userId: string, ttl: number = 60000) {
-    const keys = await this.session.client.fetch({
+    const keys = await this.client.fetch({
       service_name: this.serviceName,
       account_id: accountId,
       ttl: ttl,
@@ -482,7 +481,7 @@ export class AIMSClientInstance {
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23/access_keys/61FB235617960503"
    */
   async deleteAccessKey(accountId: string, userId: string, accessKeyId: string) {
-    const keyDelete = await this.session.client.delete({
+    const keyDelete = await this.client.delete({
       service_name: this.serviceName,
       account_id: accountId,
       path: `/users/${userId}/access_keys/${accessKeyId}`,
