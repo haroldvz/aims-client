@@ -12,6 +12,11 @@ const queryParams = { foo: 'bar' };
 afterEach(() => {
   sinon.restore();
 });
+describe("Placeholder test", () => {
+    it("will WIN!", () => {
+        expect( true ).to.equal( true );
+    } );
+} );
 xdescribe('AIMS Client Test Suite:', () => {
   describe('when performing a create user operation', () => {
     let stub: sinon.SinonSpy;
