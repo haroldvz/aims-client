@@ -5,35 +5,6 @@ import { AlChangeStamp, AIMSAuthentication, AIMSUser, AIMSAccount, AIMSSessionDe
  */
 export { AlChangeStamp, AIMSAuthentication, AIMSUser, AIMSAccount, AIMSSessionDescriptor } from '@al/client';
 
-/*
-interface AIMSUser {
-  id?: string;
-  name?: string;
-  email?: string;
-  active?: boolean;
-  locked?: boolean;
-  version?: number;
-  linked_users?: {
-    location: string;
-    user_id: number;
-  }[];
-  user_credential?: {
-    id?: string;
-    user_id?: string;
-    account_id?: string;
-    key?: string;
-    type?: string;
-    version?: number;
-    one_time_password?: boolean;
-    last_login?: number;
-    created?: AlChangeStamp;
-    modified?: AlChangeStamp;
-  };
-  created?: AlChangeStamp;
-  modified?: AlChangeStamp;
-}
- */
-
 export interface AIMSAuthenticationTokenInfo extends AIMSAuthentication {
   entity_id?: string;
   entity_type?: string;
