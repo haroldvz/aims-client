@@ -56,6 +56,7 @@ export class AIMSClientInstance {
       service_name: this.serviceName,
       account_id: accountId,
       path: `/users/${userId}`,
+      retry_count: 5
     });
     return userDetails as AIMSUser;
   }
@@ -86,6 +87,7 @@ export class AIMSClientInstance {
       service_name: this.serviceName,
       account_id: accountId,
       path: '/account',
+      retry_count: 5
     });
     return accountDetails as AIMSAccount;
   }
@@ -102,6 +104,7 @@ export class AIMSClientInstance {
       account_id: accountId,
       path: '/accounts/managed',
       params: queryParams,
+      retry_count: 5
     });
     return managedAccounts.accounts as AIMSAccount[];
   }
@@ -118,6 +121,7 @@ export class AIMSClientInstance {
       account_id: accountId,
       path: '/account_ids/managed',
       params: queryParams,
+      retry_count: 5
     });
     return managedAccountIds.account_ids as string[];
   }
