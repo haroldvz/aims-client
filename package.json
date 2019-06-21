@@ -1,6 +1,6 @@
 {
   "name": "@al/aims",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "license": "MIT",
   "description": "A client for interacting with the Alert Logic AIMS Public API",
   "author": {
