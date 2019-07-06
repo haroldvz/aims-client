@@ -176,6 +176,9 @@ export class AIMSClientInstance {
 
   /**
    * Obtain Authentication Token Information (Account, User, Roles, etc.)
+   *
+   * @deprecated
+   *
    * GET
    * /aims/v1/token_info
    * "https://api.cloudinsight.alertlogic.com/aims/v1/token_info"
@@ -186,6 +189,20 @@ export class AIMSClientInstance {
       path: '/token_info',
     });
     return tokenData as AIMSAuthenticationTokenInfo;
+  }
+
+  /**
+   * Obtain Authentication Token Information for a specific access token
+   */
+  public async getTokenInfo( accessToken:string ):Promise<AIMSAuthenticationTokenInfo> {
+    return this.client.get( {
+      service_name: this.serviceName,
+      version: 1,
+      path: '/token_info',
+      headers: {
+        'X-AIMS-Auth-Token': accessToken
+      }
+    } );
   }
 
   /**
