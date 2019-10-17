@@ -1,8 +1,9 @@
 /**
  * Module to deal with available AIMS Public API endpoints
  */
+import { AlLocation, AlResponseValidationError } from '@al/common';
 import { AlApiClient, AlDefaultClient, APIRequestParams, AIMSSessionDescriptor } from '@al/client';
-import { AIMSAccount, AIMSUser, AIMSAuthentication, AIMSAuthenticationTokenInfo, AIMSRole, AIMSAccessKey } from './types';
+import { AIMSAccount, AIMSUser, AIMSAuthentication, AIMSAuthenticationTokenInfo, AIMSRole, AIMSAccessKey, AIMSOrganization } from './types';
 
 export class AIMSClientInstance {
 
@@ -196,6 +197,7 @@ export class AIMSClientInstance {
    */
   public async getTokenInfo( accessToken:string ):Promise<AIMSAuthenticationTokenInfo> {
     return this.client.get( {
+      service_stack: AlLocation.GlobalAPI,
       service_name: this.serviceName,
       version: 1,
       path: '/token_info',
@@ -511,6 +513,37 @@ export class AIMSClientInstance {
     });
     return keyDelete;
   }
+
+  /**
+   * Starts/Refreshes an Endpoints Session
+   */
+  async startEndpointsSession():Promise<string> {
+    const requestDescriptor = {
+      service_name: this.serviceName,
+      version: 'v1',
+      path: '/endpoints_session'
+    };
+    return await this.client.get( requestDescriptor )
+                          .then( responseData => {
+                            if ( ! responseData.hasOwnProperty("cookie") ) {
+                              return Promise.reject( new AlResponseValidationError( "Unexpected response format: no 'cookie' property present." ) );
+                            }
+                            return responseData.cookie as string;
+                          } );
+  }
+
+    /**
+     * Retrieve linked organization
+     */
+    async getAccountOrganization( accountId:string ):Promise<AIMSOrganization> {
+      const requestDescriptor = {
+          service_name: this.serviceName,
+          version: 1,
+          account_id: accountId,
+          path: '/organization'
+      };
+      return await this.client.get( requestDescriptor ) as AIMSOrganization;
+    }
 }
 
 /* tslint:disable:variable-name */

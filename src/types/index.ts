@@ -36,3 +36,12 @@ export interface AIMSAccessKey {
   secret_key?: string;
 }
 
+export interface AIMSOrganization {
+  account_id: string;
+  location_id: string;
+  id: string;
+  version: number;
+  created: AlChangeStamp;
+  modified: AlChangeStamp;
+  url: string;
+}
