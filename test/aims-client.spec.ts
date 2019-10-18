@@ -12,13 +12,14 @@ const queryParams = { foo: 'bar' };
 
 describe('AIMS Client Test Suite:', () => {
   let stub: sinon.SinonSpy;
-  let apiBaseURL;
+  let apiBaseURL, globalBaseURL;
   beforeEach(() => {
+    AlLocatorService.setContext( { environment: "integration" } );
     ALClient.reset()
             .setGlobalParameters( { noEndpointsResolution: true } );
-    AlLocatorService.setContext( { environment: "integration" } );
     stub = sinon.stub(ALClient as any, "axiosRequest").returns( Promise.resolve( { status: 200, data: 'Some result', config: {} } ) );
     apiBaseURL = AlLocatorService.resolveURL( AlLocation.InsightAPI );
+    globalBaseURL = AlLocatorService.resolveURL( AlLocation.GlobalAPI );
   });
   afterEach(() => {
     stub.restore();
@@ -156,7 +157,7 @@ describe('AIMS Client Test Suite:', () => {
       expect( stub.callCount ).to.equal( 1 );
       const payload = stub.args[0][0];
       expect( payload.method ).to.equal( "GET" );
-      expect( payload.url ).to.equal( `${apiBaseURL}/aims/v1/token_info` );
+      expect( payload.url ).to.equal( `${globalBaseURL}/aims/v1/token_info` );
       expect( payload.headers['X-AIMS-Auth-Token'] ).to.equal( 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' );
     } );
   } );
