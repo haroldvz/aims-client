@@ -1,7 +1,7 @@
 /**
  * Module to deal with available AIMS Public API endpoints
  */
-import { AlLocation, AlResponseValidationError } from '@al/common';
+import { AlLocatorService, AlLocation, AlResponseValidationError } from '@al/common';
 import { AlApiClient, AlDefaultClient, APIRequestParams, AIMSSessionDescriptor } from '@al/client';
 import { AIMSAccount, AIMSUser, AIMSAuthentication, AIMSAuthenticationTokenInfo, AIMSRole, AIMSAccessKey, AIMSOrganization } from './types';
 
@@ -57,7 +57,8 @@ export class AIMSClientInstance {
       service_name: this.serviceName,
       account_id: accountId,
       path: `/users/${userId}`,
-      retry_count: 5
+      retry_count: 5,
+      ttl: 2 * 60 * 1000
     });
     return userDetails as AIMSUser;
   }
@@ -73,6 +74,7 @@ export class AIMSClientInstance {
       service_name: this.serviceName,
       account_id: accountId,
       path: `/users/${userId}/permissions`,
+      ttl: 2 * 60 * 1000
     });
     return userPermissions;
   }
@@ -88,7 +90,8 @@ export class AIMSClientInstance {
       service_name: this.serviceName,
       account_id: accountId,
       path: '/account',
-      retry_count: 5
+      retry_count: 5,
+      ttl: 2 * 60 * 1000
     });
     return accountDetails as AIMSAccount;
   }
@@ -105,7 +108,8 @@ export class AIMSClientInstance {
       account_id: accountId,
       path: '/accounts/managed',
       params: queryParams,
-      retry_count: 5
+      retry_count: 5,
+      ttl: 2 * 60 * 1000
     });
     return managedAccounts.accounts as AIMSAccount[];
   }
@@ -122,7 +126,8 @@ export class AIMSClientInstance {
       account_id: accountId,
       path: '/account_ids/managed',
       params: queryParams,
-      retry_count: 5
+      retry_count: 5,
+      ttl: 2 * 60 * 1000
     });
     return managedAccountIds.account_ids as string[];
   }
@@ -203,7 +208,9 @@ export class AIMSClientInstance {
       path: '/token_info',
       headers: {
         'X-AIMS-Auth-Token': accessToken
-      }
+      },
+      ttl: 10 * 60 * 1000,
+      cacheKey: AlLocatorService.resolveURL( AlLocation.GlobalAPI, `/aims/v1/token_info/${accessToken}` )       //  custom cacheKey to avoid cache pollution
     } );
   }
 
