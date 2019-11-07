@@ -97,6 +97,24 @@ describe('AIMS Client Test Suite:', () => {
       expect( payload.url ).to.equal( `${apiBaseURL}/aims/v1/${accountId}/account_ids/managed` );
     });
   });
+  describe('when retrieving managing account Id', () => {
+    it('should call fetch() on the ALClient instance with a correctly constructed payload', async() => {
+      await AIMSClient.getAccountIdsByRelationship(accountId,'managing', queryParams);
+      expect(stub.callCount).to.equal(1);
+      const payload = stub.args[0][0];
+      expect( payload.method ).to.equal( "GET" );
+      expect( payload.url ).to.equal( `${apiBaseURL}/aims/v1/${accountId}/account_ids/managing` );
+    });
+  });
+  describe('when retrieving managing accounts', () => {
+    it('should call fetch() on the ALClient instance with a correctly constructed payload', async() => {
+      await AIMSClient.getAccountsByRelationship(accountId,'managing', queryParams);
+      expect(stub.callCount).to.equal(1);
+      const payload = stub.args[0][0];
+      expect( payload.method ).to.equal( "GET" );
+      expect( payload.url ).to.equal( `${apiBaseURL}/aims/v1/${accountId}/accounts/managing` );
+    });
+  });
   describe('when enabling MFA for a user account', () => {
     it('should call post() on the ALClient instance with a correctly constructed payload', async() => {
       await AIMSClient.requireMFA(accountId, true);
