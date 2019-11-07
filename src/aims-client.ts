@@ -97,39 +97,65 @@ export class AIMSClientInstance {
   }
 
   /**
+   * @deprecated use getAccountsByRelationship
    * List managed accounts
    * GET
    * /aims/v1/:account_id/accounts/:relationship
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/accounts/managed"
    */
   async getManagedAccounts(accountId: string, queryParams?):Promise<AIMSAccount[]> {
-    const managedAccounts = await this.client.get({
-      service_name: this.serviceName,
-      account_id: accountId,
-      path: '/accounts/managed',
-      params: queryParams,
-      retry_count: 5,
-      ttl: 2 * 60 * 1000
-    });
-    return managedAccounts.accounts as AIMSAccount[];
+    return this.getAccountsByRelationship(accountId, 'managed', queryParams );
   }
 
   /**
+   * @deprecated use getAccountIdsByRelationship
    * List managed account IDs
    * GET
    * /aims/v1/:account_id/account_ids/:relationship
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account_ids/managed"
    */
   async getManagedAccountIds(accountId: string, queryParams?):Promise<string[]> {
-    const managedAccountIds = await this.client.get({
+    return this.getAccountIdsByRelationship(accountId, 'managed', queryParams );
+  }
+
+  /**
+   * List account IDs, by relationship can be managing, managed and bills_to
+   * GET
+   * /aims/v1/:account_id/account_ids/:relationship
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account_ids/managing"
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account_ids/managed"
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/account_ids/bills_to"
+   */
+  async getAccountIdsByRelationship(accountId: string, relationship: string, queryParams?):Promise<string[]> {
+    const accountIds = await this.client.get({
       service_name: this.serviceName,
       account_id: accountId,
-      path: '/account_ids/managed',
+      path: `/account_ids/${relationship}`,
       params: queryParams,
       retry_count: 5,
       ttl: 2 * 60 * 1000
     });
-    return managedAccountIds.account_ids as string[];
+    return accountIds.account_ids as string[];
+  }
+
+  /**
+   * List accounts, by relationship can be managing, managed and bills_to
+   * GET
+   * /aims/v1/:account_id/accounts/:relationship
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/accounts/managing"
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/accounts/managed"
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/accounts/bills_to"
+   */
+  async getAccountsByRelationship(accountId: string, relationship: string, queryParams?):Promise<AIMSAccount[]> {
+    const managedAccounts = await this.client.get({
+      service_name: this.serviceName,
+      account_id: accountId,
+      path: `/accounts/${relationship}`,
+      params: queryParams,
+      retry_count: 5,
+      ttl: 2 * 60 * 1000
+    });
+    return managedAccounts.accounts as AIMSAccount[];
   }
 
   /**
