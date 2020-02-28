@@ -47,7 +47,7 @@ export class AIMSClientInstance {
   }
 
   /**
-   * Get user details
+   * Get user details from the given account_id
    * GET
    * /aims/v1/:account_id/users/:user_id
    * "https://api.cloudinsight.alertlogic.com/aims/v1/12345678/users/715A4EC0-9833-4D6E-9C03-A537E3F98D23"
@@ -57,6 +57,22 @@ export class AIMSClientInstance {
       service_name: this.serviceName,
       account_id: accountId,
       path: `/users/${userId}`,
+      retry_count: 5,
+      ttl: 2 * 60 * 1000
+    });
+    return userDetails as AIMSUser;
+  }
+
+  /**
+   * Gets user details on any child chain
+   * GET
+   * /aims/v1/:account_id/users/:user_id
+   * "https://api.cloudinsight.alertlogic.com/aims/v1/user/715A4EC0-9833-4D6E-9C03-A537E3F98D23"
+   */
+  async getChildUserDetailsById(accountId: string, userId: string) {
+    const userDetails = await this.client.get({
+      service_name: this.serviceName,
+      path: `/user/${userId}`,
       retry_count: 5,
       ttl: 2 * 60 * 1000
     });
