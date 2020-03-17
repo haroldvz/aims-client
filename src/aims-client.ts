@@ -159,6 +159,29 @@ export class AIMSClientInstance {
   }
 
   /**
+   *  Retrieve a union of user records corresponding to a managed relationship hierarchy between two accounts.
+   *  This is a placeholder for a better implementation based on a relationship topology endpoint from AIMS.0
+   */
+  async getUsersFromManagedRelationship( leafAccountId:string, terminalAccountId?:string, failOnError:boolean = true ):Promise<AIMSUser[]> {
+    let users = await this.getUsers( leafAccountId, { include_role_ids: false, include_user_credential: false } );
+    try {
+      let managing = await this.getAccountsByRelationship( leafAccountId, "managing" );
+      if ( managing.length > 0 ) {
+        managing.sort( ( a, b ) => parseInt( b.id, 10 ) - parseInt( a.id, 10 ) );               //  this is gross hackery.  Kevin did not implement this.  Tell no-one of what you've seen!
+        let parentUsers = await this.getUsersFromManagedRelationship( managing[0].id, terminalAccountId );
+        if ( Array.isArray( parentUsers ) ) {
+          users = users.concat( parentUsers );
+        }
+      }
+    } catch( e ) {
+      if ( failOnError ) {
+        throw e;
+      }
+    }
+    return users;
+  }
+
+  /**
    * Update account MFA requirements
    * POST
    * /aims/v1/:account_id/account
