@@ -3,7 +3,7 @@
  */
 import { AlLocatorService, AlLocation, AlResponseValidationError } from '@al/common';
 import { AlApiClient, AlDefaultClient, APIRequestParams, AIMSSessionDescriptor } from '@al/client';
-import { AIMSAccount, AIMSUser, AIMSAuthentication, AIMSAuthenticationTokenInfo, AIMSRole, AIMSAccessKey, AIMSOrganization } from './types';
+import { AIMSAccount, AIMSUser, AIMSAuthentication, AIMSAuthenticationTokenInfo, AIMSRole, AIMSAccessKey, AIMSOrganization, AIMSTopology } from './types';
 
 export class AIMSClientInstance {
 
@@ -161,6 +161,7 @@ export class AIMSClientInstance {
   /**
    *  Retrieve a union of user records corresponding to a managed relationship hierarchy between two accounts.
    *  This is a placeholder for a better implementation based on a relationship topology endpoint from AIMS.0
+   *  @deprecated use getAccountsIdsByRelationship in conjunction with getUsersFromAccounts
    */
   async getUsersFromManagedRelationship( leafAccountId:string, terminalAccountId?:string, failOnError:boolean = true ):Promise<AIMSUser[]> {
     let users = await this.getUsers( leafAccountId, { include_role_ids: false, include_user_credential: false } );
@@ -600,6 +601,56 @@ export class AIMSClientInstance {
       };
       return await this.client.get( requestDescriptor ) as AIMSOrganization;
     }
+
+  /**
+   * This endpoint render's an accounts related accounts topologically by adding a :relationship field to the account object,
+   * which contains an array of accounts that are directly related to it.
+   * GET
+   * /aims/v1/:account_id/accounts/:relationship/topology
+   * https://console.product.dev.alertlogic.com/api/aims/index.html#api-AIMS_Account_Resources-AccountRelationshipExists
+   * @param accountId {string}
+   * @param relationship {'managed' | 'managing'}
+   * @param queryParms {Object}
+   */
+  async getAccountRelationshipTopology(accountId: string, relationship: 'managed' | 'managing', queryParams?): Promise<AIMSTopology> {
+    const response = await this.client.get({
+      service_name: this.serviceName,
+      account_id: accountId,
+      path: `/accounts/${relationship}/topology`,
+      params: queryParams
+    });
+    return response.topology as AIMSTopology;
+  }
+
+  /**
+   * Returns the ids of the accounts to which an account is related.
+   * The related accounts that are returned depend oonf the :relationship param.
+   * If using a "managed" relationship, this returns all accounts that the current account manages.
+   * If using a "managing" relationship, this returns all accounts that managing the current account.
+   * @param accountId {string}
+   * @param relationship {'managed' | 'managing'}
+   * @param addCurrentId {boolean} [addCurrentId=true] true if wants add the current id to the return
+   */
+  async getAccountsIdsByRelationship(accountId: string, relationship: 'managed' | 'managing', addCurrentId: boolean = true): Promise<string[]> {
+    const topology = await this.getAccountRelationshipTopology(accountId, relationship);
+
+    function getIds(accounts: AIMSTopology[]): string[] {
+      return accounts.flatMap(a => [a.id, ...getIds(Array.isArray(a[relationship]) ? a[relationship] : [])]);
+    }
+    const first = addCurrentId ? [accountId] : [];
+    return [...first, ...getIds(topology[relationship])];
+  }
+
+  /**
+   * Returns all users associated with a list of accounts
+   * @param accountList {string[]}
+   */
+  async getUsersFromAccounts(accountList: string[]): Promise<AIMSUser[]> {
+    return (await Promise.all(
+      accountList.map(account => this.getUsers(account, { include_role_ids: false, include_user_credential: false }))
+    )).flat();
+  }
+
 }
 
 /* tslint:disable:variable-name */

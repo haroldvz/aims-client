@@ -45,3 +45,9 @@ export interface AIMSOrganization {
   modified: AlChangeStamp;
   url: string;
 }
+
+export interface AIMSTopology extends AIMSAccount {
+  id: string;
+  managing?: AIMSTopology[];
+  managed?: AIMSTopology[];
+}
